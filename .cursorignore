@@ -1,0 +1,50 @@
+# Cursor AI ignore file
+# Files and patterns to exclude from AI features
+
+# Environment files (sensitive data)
+
+.env.local
+.env.test
+
+# But allow .env.example (template files)
+!.env
+!.env.example
+!.env.development
+!.env.production
+
+# Logs
+*.log
+logs/
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp

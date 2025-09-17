@@ -1,0 +1,64 @@
+# CTC数据管理与报表生成平台 - Python依赖包
+
+# Django核心框架
+Django==5.2.4
+djangorestframework==3.15.0
+djangorestframework-simplejwt==5.3.1
+django-cors-headers==4.3.1
+django-filter==23.5
+django-redis==5.4.0
+
+# 数据库驱动
+mysqlclient==2.2.0
+pymysql==1.1.0
+
+# 认证和安全
+PyJWT==2.8.0
+cryptography==41.0.7
+
+# API文档
+drf-yasg==1.21.7
+
+# 异步任务
+celery==5.3.4
+redis==5.0.1
+django-celery-results>=2.5.1
+django-celery-beat>=2.5.0
+
+# 数据处理
+pandas==2.1.4
+numpy==1.24.3
+openpyxl==3.1.2
+xlsxwriter==3.1.9
+
+# 文件处理
+Pillow==10.2.0
+reportlab==4.0.7
+
+# 网络和文件传输
+requests==2.31.0
+paramiko==3.4.0
+
+# 系统监控
+psutil==5.9.6
+
+# 配置管理
+python-dotenv==1.0.0
+
+# 搜索功能
+django-haystack==3.2.1
+whoosh==2.7.4
+
+# 开发服务器
+django-sslserver==0.22
+
+# 生产服务器
+gunicorn==21.2.0
+
+# 其他工具
+python-dateutil==2.8.2
+pytz==2023.3
+
+
+
+

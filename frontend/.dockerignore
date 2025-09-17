@@ -1,0 +1,34 @@
+# Exclude dependencies and build artifacts
+node_modules
+dist
+
+# Vite cache
+.vite
+
+# Logs and temp files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment files (keep .env.example)
+.env
+.env.local
+.env.*.local
+
+# VCS
+.git
+.gitignore
+
+# Editors/IDE
+.vscode
+.idea
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Tests/coverage
+coverage
