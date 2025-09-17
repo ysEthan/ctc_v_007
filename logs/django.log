@@ -14626,3 +14626,11 @@ WARNING 2025-09-17 16:23:52,716 log 9 140072142003072 Unauthorized: /api/documen
 WARNING 2025-09-17 16:23:57,243 log 8 140072142003072 Unauthorized: /api/document/statistics/
 WARNING 2025-09-17 16:51:08,109 log 7 128027482139520 Unauthorized: /api/auth/user-info/
 WARNING 2025-09-17 17:54:42,692 log 8 130047681723264 Unauthorized: /api/auth/user-info/
+WARNING 2025-09-17 18:14:36,198 log 8 128139249654656 Unauthorized: /api/auth/user-info/
+WARNING 2025-09-17 18:28:15,622 log 8 128139249654656 Forbidden: /api/document/scan/
+WARNING 2025-09-17 18:28:18,819 log 8 128139249654656 Forbidden: /api/document/scan/
+WARNING 2025-09-17 18:28:39,401 log 8 128139249654656 Forbidden: /api/document/scan/
+WARNING 2025-09-17 18:28:51,845 log 10 128139249654656 Forbidden: /api/document/scan/
+WARNING 2025-09-17 18:32:44,674 log 9 136853660212096 Bad Request: /api/auth/login/
+WARNING 2025-09-17 18:32:50,971 log 9 136853660212096 Bad Request: /api/auth/login/
+WARNING 2025-09-17 18:33:07,046 log 10 136853660212096 Unauthorized: /api/document/scan/

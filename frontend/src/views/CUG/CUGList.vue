@@ -40,7 +40,7 @@
             placeholder="产品ID"
             clearable
             @keyup.enter="handleSearch"
-            style="width: 120px"
+            style="width: 110px"
           />
         </el-form-item>
         

@@ -287,7 +287,7 @@ def retry_badcase(request, badcase_id):
 
 
 @api_view(['POST'])
-@permission_classes([IsAdmin])
+@permission_classes([IsActiveUser])
 def scan_new_documents(request):
     """
     扫描新文档

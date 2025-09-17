@@ -14,7 +14,7 @@ from tasks.celery_beat_schedule import CELERY_BEAT_SCHEDULE
 app.conf.beat_schedule = CELERY_BEAT_SCHEDULE
 
 # 自动发现任务
-app.autodiscover_tasks()
+app.autodiscover_tasks(['tasks'])
 
 @app.task(bind=True)
 def debug_task(self):

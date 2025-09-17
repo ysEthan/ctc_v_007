@@ -1,7 +1,10 @@
 # Exclude data folder
-data/
+/data
 
 # Exclude environment example files
 .env.example
 backend/.env.example
 frontend/.env.example
+
+# Exclude docker compose file
+docker-compose.yml
