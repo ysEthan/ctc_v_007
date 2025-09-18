@@ -139,7 +139,25 @@ const handleLogin = async () => {
     
   } catch (error: any) {
     console.error('登录失败:', error)
-    ElMessage.error(error.response?.data?.detail || '登录失败，请检查用户名和密码')
+    
+    // 处理具体的错误信息
+    const errorData = error.response?.data
+    let errorMessage = '登录失败，请检查用户名和密码'
+    
+    if (errorData) {
+      // 处理字段特定的错误
+      if (errorData.username_or_email) {
+        errorMessage = errorData.username_or_email[0] || '用户名或邮箱错误'
+      } else if (errorData.password) {
+        errorMessage = errorData.password[0] || '密码错误'
+      } else if (errorData.non_field_errors) {
+        errorMessage = errorData.non_field_errors[0] || '登录失败'
+      } else if (errorData.detail) {
+        errorMessage = errorData.detail
+      }
+    }
+    
+    ElMessage.error(errorMessage)
   } finally {
     loading.value = false
   }

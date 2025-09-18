@@ -1,4 +1,4 @@
-name: ctc_template
+name: ctc
 services:
   # Redis服务 - 用于缓存和Celery消息代理
   redis:
@@ -71,6 +71,12 @@ services:
     networks:
       - ctc_network
     command: celery -A mysite worker -l info
+    healthcheck:
+      test: ["CMD", "celery", "-A", "mysite", "inspect", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Celery Beat - 定时任务调度
   celery_beat:
@@ -95,6 +101,12 @@ services:
     networks:
       - ctc_network
     command: celery -A mysite beat -l info
+    healthcheck:
+      test: ["CMD", "sh", "-c", "pgrep -f 'celery.*beat' > /dev/null"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Vue前端服务
   frontend:
@@ -111,7 +123,7 @@ services:
     networks:
       - ctc_network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
       interval: 30s
       timeout: 10s
       retries: 3

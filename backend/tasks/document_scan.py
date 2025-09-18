@@ -33,8 +33,10 @@ def scan_and_process_documents(self):
             try:
                 # 移动文件到processing目录
                 if document_handler.move_file_to_processing(file_path):
+                    # 更新文件路径为processing目录
+                    processing_file_path = document_handler.processing_dir / file_path.name
                     # 创建文档记录
-                    document = document_handler.create_document_record(file_path)
+                    document = document_handler.create_document_record(processing_file_path)
                     
                     # 异步处理文档
                     process_document.delay(document.id)

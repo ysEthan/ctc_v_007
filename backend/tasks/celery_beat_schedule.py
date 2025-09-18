@@ -5,13 +5,13 @@ from celery.schedules import crontab
 
 # 定时任务配置
 CELERY_BEAT_SCHEDULE = {
-    # 文档扫描任务 - 每6小时执行一次
+    # 文档扫描任务 - 每天下午2点半执行
     'scan-documents': {
         'task': 'tasks.document_scan.scan_and_process_documents',
-        'schedule': crontab(minute=0, hour='*/6'),  # 每6小时的整点执行
+        'schedule': crontab(hour=14,minute=32),  # 每天下午2点半执行
         'options': {
-            'queue': 'default',
-            'routing_key': 'scan.documents',
+            'queue': 'celery',
+            'routing_key': 'celery',
         }
     },
     
@@ -20,8 +20,14 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'tasks.document_scan.cleanup_old_documents',
         'schedule': crontab(minute=0, hour=2),  # 每天凌晨2点执行
         'options': {
-            'queue': 'default',
-            'routing_key': 'cleanup.documents',
+            'queue': 'celery',
+            'routing_key': 'celery',
         }
     },
 }
+
+
+
+
+
+

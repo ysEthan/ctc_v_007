@@ -1,12 +1,9 @@
 """
 认证相关视图
 """
-import random
-import string
 from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
-from django.contrib.auth import login
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from rest_framework import status, generics, permissions
@@ -92,14 +89,15 @@ class UserLoginView(TokenObtainPairView):
             })
         
         # 记录登录失败日志
-        if 'username_or_email' in serializer.validated_data:
-            try:
-                user = User.objects.get_by_username_or_email(
-                    serializer.validated_data['username_or_email']
-                )
-                self._log_login(user, request, False, '密码错误')
-            except User.DoesNotExist:
-                pass
+        username_or_email = request.data.get('username_or_email', '')
+        failure_reason = self._get_failure_reason(serializer.errors)
+        
+        try:
+            user = User.objects.get_by_username_or_email(username_or_email)
+            self._log_login(user, request, False, failure_reason)
+        except User.DoesNotExist:
+            # 用户不存在时，创建一个临时用户记录用于日志
+            self._log_login_failure(username_or_email, request, failure_reason)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -111,6 +109,40 @@ class UserLoginView(TokenObtainPairView):
         else:
             ip = request.META.get('REMOTE_ADDR')
         return ip
+    
+    def _get_failure_reason(self, errors):
+        """从验证错误中提取失败原因"""
+        if 'username_or_email' in errors:
+            return '用户不存在'
+        elif 'password' in errors:
+            return '密码错误'
+        elif 'non_field_errors' in errors:
+            non_field_errors = errors['non_field_errors']
+            if any('禁用' in error for error in non_field_errors):
+                return '账户已被禁用'
+            elif any('验证' in error for error in non_field_errors):
+                return '邮箱未验证'
+        return '登录失败'
+    
+    def _log_login_failure(self, username_or_email, request, failure_reason):
+        """记录用户不存在的登录失败日志"""
+        # 创建一个临时用户对象用于日志记录
+        try:
+            # 尝试通过邮箱查找
+            if '@' in username_or_email:
+                user = User.objects.get(email=username_or_email)
+            else:
+                user = User.objects.get(username=username_or_email)
+            self._log_login(user, request, False, failure_reason)
+        except User.DoesNotExist:
+            # 如果用户真的不存在，记录一个特殊的日志
+            LoginLog.objects.create(
+                user=None,
+                login_ip=self._get_client_ip(request),
+                user_agent=request.META.get('HTTP_USER_AGENT', ''),
+                is_successful=False,
+                failure_reason=f'用户不存在: {username_or_email}'
+            )
     
     def _log_login(self, user, request, is_successful, failure_reason=''):
         """记录登录日志"""

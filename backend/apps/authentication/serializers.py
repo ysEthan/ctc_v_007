@@ -3,6 +3,7 @@
 """
 from rest_framework import serializers
 from django.contrib.auth import authenticate
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from .models import User, EmailVerification, LoginLog
 
@@ -85,11 +86,21 @@ class UserLoginSerializer(serializers.Serializer):
     用户登录序列化器
     """
     username_or_email = serializers.CharField(
-        help_text='用户名或邮箱'
+        help_text='用户名或邮箱',
+        allow_blank=False,
+        error_messages={
+            'blank': '用户名或邮箱不能为空',
+            'required': '用户名或邮箱不能为空'
+        }
     )
     password = serializers.CharField(
         write_only=True,
-        help_text='密码'
+        help_text='密码',
+        allow_blank=False,
+        error_messages={
+            'blank': '密码不能为空',
+            'required': '密码不能为空'
+        }
     )
     remember_me = serializers.BooleanField(
         default=False,
@@ -101,29 +112,39 @@ class UserLoginSerializer(serializers.Serializer):
         username_or_email = attrs.get('username_or_email')
         password = attrs.get('password')
         
-        if username_or_email and password:
-            # 尝试通过用户名或邮箱查找用户
-            try:
-                user = User.objects.get_by_username_or_email(username_or_email)
-            except User.DoesNotExist:
-                raise serializers.ValidationError('用户不存在')
-            
-            # 验证密码
-            user = authenticate(
-                username=user.username,
-                password=password
-            )
-            
-            if not user:
-                raise serializers.ValidationError('密码错误')
-            
-            if not user.is_active:
-                raise serializers.ValidationError('账户已被禁用')
-            
-            attrs['user'] = user
-            return attrs
-        else:
-            raise serializers.ValidationError('用户名和密码不能为空')
+        # 尝试通过用户名或邮箱查找用户
+        try:
+            user = User.objects.get_by_username_or_email(username_or_email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError({
+                'username_or_email': ['用户不存在，请检查用户名或邮箱是否正确']
+            })
+        
+        # 检查用户状态
+        if not user.is_active:
+            raise serializers.ValidationError({
+                'non_field_errors': ['账户已被禁用，请联系管理员']
+            })
+        
+        # 验证密码
+        authenticated_user = authenticate(
+            username=user.username,
+            password=password
+        )
+        
+        if not authenticated_user:
+            raise serializers.ValidationError({
+                'password': ['密码错误，请重新输入']
+            })
+        
+        # 检查邮箱验证状态
+        if not user.email_verified:
+            raise serializers.ValidationError({
+                'non_field_errors': ['邮箱未验证，请先验证邮箱后再登录']
+            })
+        
+        attrs['user'] = authenticated_user
+        return attrs
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

@@ -31,6 +31,9 @@ RUN npm run build-only
 # 生产环境镜像
 FROM nginx
 
+# 安装curl用于健康检查
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # 复制构建文件
 COPY --from=builder /app/dist /usr/share/nginx/html
 
