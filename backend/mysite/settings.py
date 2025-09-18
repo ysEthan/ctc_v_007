@@ -202,7 +202,7 @@ SIMPLE_JWT = {
 }
 
 # CORS 配置
-CORS_ALLOW_ALL_ORIGINS = True  # 开发环境允许所有源
+CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'False').lower() == 'true'
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3001',
